@@ -6,6 +6,7 @@ out of VideoClips
 import sys
 import numpy as np
 import subprocess as sp
+from fractions import Fraction
 
 try:
     from subprocess import DEVNULL # py3k
@@ -169,9 +170,9 @@ def ffmpeg_write_video(clip, filename, fps, codec="libx264", bitrate=None,
     nframes = int(clip.duration*fps)
     
     for i in tqdm(range(nframes)):
-        frame = clip.get_frame(1.0*i/fps)
+        frame = clip.get_frame(Fraction(i,fps))
         if withmask:
-            mask = (255*clip.mask.get_frame(1.0*i/fps))
+            mask = (255*clip.mask.get_frame(Fraction(i,fps)))
             frame = np.dstack([frame,mask])
             
         writer.write_frame(frame.astype("uint8"))
